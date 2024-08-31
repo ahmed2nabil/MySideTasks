@@ -5,12 +5,26 @@ import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule, ConfigService  } from '@nestjs/config';
+
 @Module({
   imports: [
     AuthModule,
     UserModule,
     ProductModule,
-    MongooseModule.forRoot('mongodb+srv://testUser:vk_3H9SpvkEB5@atlascluster.crxz8gj.mongodb.net/?retryWrites=true&w=majority&appName=AtlasCluster'),
+    ConfigModule.forRoot({
+        envFilePath: '../../.env',
+        isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('DATABASE_URL'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
