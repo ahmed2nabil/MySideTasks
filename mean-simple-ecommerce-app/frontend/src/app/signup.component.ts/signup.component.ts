@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -29,7 +29,11 @@ export class SignupComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['',[Validators.required]],
-    });
+    },
+    {
+      validators: this.matchValidator('password', 'confirmPassword')
+    }
+  );
     this.error$ = this.store.select((state) =>  state.auth.error); // Select auth error
   }
   ngOnInit() {
@@ -39,15 +43,24 @@ export class SignupComponent implements OnInit {
       }
     });
   }
-  passwordMatchValidator(control: AbstractControl): Observable<ValidationErrors | null>  {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
+  matchValidator(controlName: string, matchingControlName: string): ValidatorFn {
+    return (abstractControl: AbstractControl) => {
+        const control = abstractControl.get(controlName);
+        const matchingControl = abstractControl.get(matchingControlName);
 
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      return of({ 'passwordMismatch': true });
+        if (matchingControl!.errors && !matchingControl!.errors?.['confirmedValidator']) {
+            return null;
+        }
+
+        if (control!.value !== matchingControl!.value) {
+          const error = { confirmedValidator: 'Passwords do not match.' };
+          matchingControl!.setErrors(error);
+          return error;
+        } else {
+          matchingControl!.setErrors(null);
+          return null;
+        }
     }
-
-    return of(null);
   }
   onSubmit() {
     if (this.signupForm.valid) {
