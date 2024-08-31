@@ -58,8 +58,8 @@ export class ProductsComponent implements OnInit{
   onPriceRangeChange(event: any) {
     this.priceRange = event.value;
   }
-  getImagePath(imageName: string): string {
-    return `images/${imageName}`;
+  getImagePath(imagePath: string): string {
+    return `images/${imagePath}`;
   }
 }
 
@@ -68,5 +68,5 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  imageName: string;
+  imagePath: string;
 }

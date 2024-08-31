@@ -65,7 +65,7 @@
             <mat-grid-list cols="3" rowHeight="1:1.5" gutterSize="16px">
                 <mat-grid-tile *ngFor="let product of products$ | async">
                 <mat-card class="product-card">
-                    <img mat-card-image [src]="getImagePath(product.imageName)" [alt]="product.name">
+                    <img mat-card-image [src]="getImagePath(product.imagePath)" [alt]="product.name">
                     <mat-card-content>
                     <h2>{{ product.name }}</h2>
                     <p>{{ product.price | currency }}</p>

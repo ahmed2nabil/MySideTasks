@@ -30,6 +30,6 @@ export class AuthService {
                 expiresIn: 8 * 60 * 60 // seconds
             };
         }
-        throw new UnauthorizedException('Invalid credentials');
+        throw new UnauthorizedException('Invalid username or password');
     }
 }

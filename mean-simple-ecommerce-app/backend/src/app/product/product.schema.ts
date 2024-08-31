@@ -11,6 +11,9 @@ export class Product extends Document {
 
     @Prop({ required: true })
     description: string;
+
+    @Prop({ required: true })
+    imagePath: string;
     
     @Prop({ default: Date.now })
     createdAt: Date;
